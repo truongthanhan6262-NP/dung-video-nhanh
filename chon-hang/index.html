@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chọn Hàng Shopee</title>
+<meta name="theme-color" content="#EFF2F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1117" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Chấm điểm sản phẩm Shopee, kiểm tra nhóm bị cấm quảng bá và theo dõi giá, lượt bán theo ngày.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chọn Hàng">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap">
+<style>
+/* Layout: một cột tối đa 760px. Thẻ nhập ở trên, danh sách xếp theo điểm bên dưới, chi tiết mở ngay dưới từng thẻ. */
+:root {
+  --bg: #EFF2F6;
+  --surface: #FFFFFF;
+  --field: #F4F6FA;
+  --ink: #141B26;
+  --muted: #556072;
+  --line: #D5DBE5;
+  --accent: #2F4FD8;
+  --on-accent: #FFFFFF;
+  --accent-soft: #E3E9FD;
+  --good: #13795B;
+  --good-soft: #DDF3EA;
+  --warn: #9A5B00;
+  --warn-soft: #FDF0D8;
+  --bad: #B3261E;
+  --bad-soft: #FBE4E1;
+  --font: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1117; --surface: #151B24; --field: #1C2430; --ink: #E6EBF2; --muted: #9AA6B8; --line: #28313E;
+    --accent: #8EA2FF; --on-accent: #0B1233; --accent-soft: #1F2847;
+    --good: #5FD3A3; --good-soft: #153329; --warn: #F0B35A; --warn-soft: #3A2C12; --bad: #FF8A80; --bad-soft: #3B1A18;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1117; --surface: #151B24; --field: #1C2430; --ink: #E6EBF2; --muted: #9AA6B8; --line: #28313E;
+  --accent: #8EA2FF; --on-accent: #0B1233; --accent-soft: #1F2847;
+  --good: #5FD3A3; --good-soft: #153329; --warn: #F0B35A; --warn-soft: #3A2C12; --bad: #FF8A80; --bad-soft: #3B1A18;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 56px; }
+.app { max-width: 760px; margin-inline: auto; display: grid; gap: 20px; }
+h1 { font-weight: 800; font-size: 26px; line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-weight: 800; font-size: 17px; margin: 0; }
+p { margin: 0; }
+.lead { color: var(--muted); margin-top: 6px; max-width: 62ch; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; display: grid; gap: 14px; min-width: 0; }
+.hint { color: var(--muted); font-size: 13px; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > label, .lab { font-weight: 600; font-size: 13px; }
+input[type="text"], input[type="date"], select, textarea {
+  width: 100%; min-width: 0; font: inherit; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; min-height: 44px;
+}
+input[type="text"] { font-variant-numeric: tabular-nums; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.btn {
+  appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600;
+  min-height: 44px; padding: 0 16px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center;
+}
+.btn:hover:not(:disabled) { border-color: var(--muted); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn.small { min-height: 40px; padding: 0 12px; font-size: 13px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.link { appearance: none; border: 0; background: none; font: inherit; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; padding: 8px 4px; min-height: 40px; }
+.link.danger:hover, .link.danger.arm { color: var(--bad); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.filebtn:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 40px; font-size: 14px; font-weight: 600; }
+.check input { width: 20px; height: 20px; accent-color: var(--accent); margin: 0; }
+.msg { font-size: 13px; }
+.msg:empty { display: none; }
+.msg[data-k="err"] { color: var(--bad); } .msg[data-k="ok"] { color: var(--good); } .msg[data-k="warn"] { color: var(--warn); }
+.pick { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.pick img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 99px; background: var(--field); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.tools { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); align-items: end; }
+.list { display: grid; gap: 10px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; min-width: 0; overflow: hidden; }
+.item.open { border-color: var(--accent); }
+.item-head { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px; cursor: pointer; }
+.item-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.thumb { width: 56px; height: 56px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 800; font-size: 20px; overflow: hidden; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.meta { display: grid; gap: 4px; min-width: 0; }
+.name { font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.sub { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 99px; background: var(--field); color: var(--muted); }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.ex { background: var(--accent-soft); color: var(--accent); }
+.score { text-align: center; min-width: 44px; }
+.score b { display: block; font-size: 24px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.score i { font-style: normal; font-size: 11px; color: var(--muted); }
+.detail { border-top: 1px solid var(--line); padding: 16px 14px 14px; display: grid; gap: 18px; }
+.sec { display: grid; gap: 10px; min-width: 0; }
+.sec h3 { margin: 0; font-size: 14px; font-weight: 800; }
+.risk { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.risk li { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--field); font-size: 14px; }
+.risk li[data-k="err"] { background: var(--bad-soft); }
+.risk li[data-k="warn"] { background: var(--warn-soft); }
+.risk .tag { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.tips { margin: 0; padding-left: 18px; font-size: 14px; }
+.parts { display: grid; gap: 10px; }
+.part { display: grid; gap: 4px; }
+.part-top { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.part-top span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+.meter { height: 8px; border-radius: 99px; background: var(--field); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.charts { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.chartbox { display: grid; gap: 6px; min-width: 0; }
+.chartbox .ct { font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.chartbox .ct span:last-child { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+.chart { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.chart .grid { stroke: var(--line); stroke-width: 1; fill: none; }
+.chart .ln { stroke: var(--accent); stroke-width: 2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.chart .ar { fill: var(--accent); opacity: .12; stroke: none; }
+.chart text { fill: var(--muted); font-size: 11px; font-family: var(--font); font-variant-numeric: tabular-nums; }
+.chart .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.chart .xh { stroke: var(--muted); stroke-width: 1; fill: none; }
+.chart .hv { display: none; }
+.chart.on .hv { display: block; }
+.chart .hit { fill: transparent; }
+.tip { position: fixed; z-index: 5; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+tr:last-child td { border-bottom: 0; }
+th { color: var(--muted); font-weight: 600; background: var(--field); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.empty { text-align: center; padding: 28px 16px; display: grid; gap: 12px; justify-items: center; }
+.empty p { max-width: 44ch; }
+.note { font-size: 13px; color: var(--muted); }
+details.card > summary { cursor: pointer; font-weight: 800; font-size: 15px; list-style: none; min-height: 28px; }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary::after { content: "+"; float: right; color: var(--muted); font-weight: 400; }
+details.card[open] > summary::after { content: "\2212"; }
+.links { display: grid; gap: 6px; font-size: 14px; }
+.links a { color: var(--ink); }
+.toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: 440px; margin-inline: auto; background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 10px; font-size: 14px; z-index: 6; }
+.claudebox { background: var(--field); border-radius: 10px; padding: 12px; display: grid; gap: 8px; font-size: 14px; }
+@media (max-width: 440px) { .item-head { grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; } .thumb { width: 48px; height: 48px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="app">
+  <header>
+    <h1>Chọn Hàng Shopee</h1>
+    <p class="lead">Dán link, nhập tên hoặc thêm hình sản phẩm. Ghi giá và lượt bán mỗi ngày để biết sản phẩm nào đáng làm video và có được quảng bá hay không.</p>
+  </header>
+
+  <section class="card" id="formCard" aria-labelledby="hAdd">
+    <h2 id="hAdd">Thêm sản phẩm</h2>
+    <div class="field">
+      <label for="fLink">Link sản phẩm Shopee</label>
+      <input type="text" id="fLink" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://shopee.vn/Ten-san-pham-i.123.456">
+      <p class="msg" id="fParse" role="status" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="fName">Tên sản phẩm</label>
+      <input type="text" id="fName" autocomplete="off" maxlength="200" placeholder="Nhập tên, hoặc để tự lấy từ link">
+    </div>
+    <div class="field">
+      <span class="lab">Hình sản phẩm</span>
+      <div class="pick">
+        <label class="btn small filebtn" for="fImg">Chọn hình từ máy</label>
+        <input class="sr" type="file" id="fImg" accept="image/*">
+        <img id="fThumb" alt="Hình sản phẩm đã chọn" hidden>
+        <button type="button" class="link" id="fImgClear" hidden>Bỏ hình</button>
+      </div>
+    </div>
+    <div class="field" id="claudeRow" hidden>
+      <div class="row">
+        <button type="button" class="btn" id="fClaude">Nhờ Claude xem tên và hình</button>
+        <button type="button" class="link" id="fStop" hidden>Dừng</button>
+      </div>
+      <p class="hint" id="claudeHint">Claude nhận ra sản phẩm là gì và báo có thuộc nhóm bị cấm quảng bá không. Mỗi lần bấm dùng một ít lượt Claude của bạn. Đây chỉ là gợi ý, danh sách cấm chính thức nằm trong app Shopee Affiliate.</p>
+      <div id="fClaudeOut"></div>
+    </div>
+    <div class="grid">
+      <div class="field"><label for="fPct">% hoa hồng</label><input type="text" id="fPct" inputmode="decimal" autocomplete="off" placeholder="Ví dụ 8"></div>
+      <div class="field"><label for="fPrice">Giá bán (đ)</label><input type="text" id="fPrice" inputmode="decimal" autocomplete="off" placeholder="99.000 hoặc 99k"></div>
+      <div class="field"><label for="fSold">Đã bán (tổng)</label><input type="text" id="fSold" inputmode="decimal" autocomplete="off" placeholder="1,2k hoặc 1200"></div>
+      <div class="field"><label for="fRate">Đánh giá (sao)</label><input type="text" id="fRate" inputmode="decimal" autocomplete="off" placeholder="Ví dụ 4,8"></div>
+    </div>
+    <p class="hint" id="fNumHint">Giá, lượt bán, sao lấy từ trang sản phẩm. % hoa hồng xem trong app Shopee Affiliate. Có thể để trống rồi ghi sau.</p>
+    <div class="row">
+      <button type="button" class="btn primary" id="fSave">Lưu sản phẩm</button>
+      <button type="button" class="btn" id="fCancel" hidden>Hủy sửa</button>
+    </div>
+    <p class="msg" id="fMsg" role="status" aria-live="polite"></p>
+  </section>
+
+  <section aria-labelledby="hList" style="display:grid;gap:12px">
+    <div class="bar-head">
+      <h2 id="hList">Danh sách</h2>
+      <div class="chips" id="counts"></div>
+    </div>
+    <div class="tools" id="tools" hidden>
+      <div class="field"><label for="sort">Sắp xếp</label>
+        <select id="sort">
+          <option value="score">Điểm cao nhất</option>
+          <option value="comm">Hoa hồng mỗi đơn cao nhất</option>
+          <option value="vel">Đang bán nhanh nhất</option>
+          <option value="new">Mới thêm</option>
+        </select>
+      </div>
+      <label class="check" for="hideBan"><input type="checkbox" id="hideBan">Ẩn sản phẩm không được quảng bá</label>
+      <div class="row">
+        <button type="button" class="btn small" id="exp" hidden>Xuất CSV cho Excel</button>
+        <button type="button" class="link danger" id="delEx" hidden>Xóa các ví dụ</button>
+      </div>
+    </div>
+    <div class="list" id="list" aria-live="polite"></div>
+    <p class="note" id="storeNote"></p>
+  </section>
+
+  <details class="card" id="cfgCard">
+    <summary>Mốc chấm điểm và nguồn quy định</summary>
+    <div style="display:grid;gap:14px;margin-top:14px">
+      <p class="hint">Điểm 0 đến 100 là gợi ý để so sánh các sản phẩm với nhau, không dự đoán doanh thu. Mỗi tiêu chí đạt điểm tối đa khi chạm mốc dưới đây. Bạn đổi mốc cho hợp với ngành hàng của mình. Mốc được nhớ trên thiết bị này.</p>
+      <div class="grid">
+        <div class="field"><label for="cPer">Hoa hồng mỗi đơn đạt tối đa (đ)</label><input type="text" id="cPer" inputmode="numeric" autocomplete="off"></div>
+        <div class="field"><label for="cSold">Tổng đã bán đạt tối đa</label><input type="text" id="cSold" inputmode="numeric" autocomplete="off"></div>
+        <div class="field"><label for="cVel">Đà bán đạt tối đa (đơn mỗi ngày)</label><input type="text" id="cVel" inputmode="numeric" autocomplete="off"></div>
+      </div>
+      <div class="row"><button type="button" class="btn small" id="cSave">Lưu mốc</button><button type="button" class="link" id="cReset">Về mốc mặc định</button></div>
+      <p class="msg" id="cMsg" role="status" aria-live="polite"></p>
+      <p class="hint">Nhóm bị cấm quảng bá dựa trên trang trợ giúp của Shopee tại thời điểm làm công cụ: sữa công thức và thực phẩm, vitamin, đồ ăn dặm, ti giả, bình sữa cho trẻ nhỏ; thuốc không kê đơn thuộc nhóm vật tư y tế; đồ uống có cồn trên 15 độ. Danh sách có thể đổi, hãy đối chiếu trong app Shopee Affiliate.</p>
+      <div class="links">
+        <a href="https://help.shopee.vn/portal/10/article/132472" target="_blank" rel="noopener noreferrer">Ngành hàng và sản phẩm cấm quảng bá</a>
+        <a href="https://help.shopee.vn/portal/10/article/122944" target="_blank" rel="noopener noreferrer">Điều khoản tiếp thị liên kết</a>
+      </div>
+    </div>
+  </details>
+</main>
+<section class="card" style="max-width:760px;margin:20px auto 0" aria-labelledby="hImp">
+  <h2 id="hImp">Lấy số liệu từ trang Shopee</h2>
+  <p class="hint">Dùng trên máy tính (Chrome, Edge, Cốc Cốc). Làm một lần: kéo nút bên dưới lên thanh dấu trang. Sau đó mở trang một sản phẩm trên shopee.vn đã đăng nhập, bấm dấu trang đó, rồi quay lại đây bấm "Dán số liệu". Nút chỉ chạy khi bạn bấm, mỗi lần một trang.</p>
+  <div class="row">
+    <a class="btn small primary" id="bmLink" href="#" draggable="true" onclick="return false">Lấy số liệu Shopee</a>
+    <button type="button" class="btn small" id="bmCopy">Sao chép mã nút</button>
+  </div>
+  <p class="hint">Không kéo được thì bấm "Sao chép mã nút", tạo dấu trang mới, dán mã vào ô địa chỉ (URL) của dấu trang.</p>
+  <div class="row">
+    <button type="button" class="btn small primary" id="impPaste">Dán số liệu từ Shopee</button>
+  </div>
+  <div class="field"><label for="impText">Hoặc dán đoạn mã vào đây</label><textarea id="impText" rows="2" placeholder="CHONHANG1 {...}"></textarea></div>
+  <div class="row"><button type="button" class="btn small" id="impGo">Nhập</button></div>
+  <p class="msg" id="impMsg" role="status" aria-live="polite"></p>
+  <p class="hint">Nút đọc giá, lượt bán và số sao đang hiện trên trang. Sản phẩm nhiều phân loại thì lấy giá thấp nhất. Shopee chỉ hiện số tròn khi lượt bán lớn (ví dụ 10k+), nên đà bán sẽ kém chính xác. Nếu Shopee đổi giao diện trang, nút có thể ngừng đọc được. % hoa hồng vẫn nhập tay.</p>
+</section>
+<section class="card" style="max-width:760px;margin:20px auto 0" aria-labelledby="hBk">
+  <h2 id="hBk">Sao lưu và cài app</h2>
+  <p class="hint">Danh sách lưu trên thiết bị này. Muốn chuyển giữa điện thoại và máy tính: sao lưu thành file rồi nạp vào thiết bị kia.</p>
+  <div class="row">
+    <button type="button" class="btn small" id="bkSave">Sao lưu ra file</button>
+    <label class="btn small filebtn" for="bkLoad">Nạp từ file sao lưu</label>
+    <input class="sr" type="file" id="bkLoad" accept=".json,application/json">
+    <button type="button" class="btn small" id="installBtn" hidden>Cài app về máy</button>
+  </div>
+  <p class="hint" id="iosHint" hidden>Để cài trên iPhone hoặc iPad: mở bằng Safari, bấm nút Chia sẻ, chọn "Thêm vào MH chính".</p>
+  <p class="msg" id="bkMsg" role="status" aria-live="polite"></p>
+</section>
+<div class="tip" id="tip" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var norm = function (s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').toLowerCase(); };
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+
+  /* ---------- Cài đặt mốc chấm điểm ---------- */
+  var SKEY = 'chon-hang-settings';
+  var DEF = { perSale: 20000, sold: 10000, vel: 20 };
+  var CFG = { perSale: DEF.perSale, sold: DEF.sold, vel: DEF.vel };
+  try { var j = JSON.parse(localStorage.getItem(SKEY) || 'null'); if (j) { CFG.perSale = +j.perSale || DEF.perSale; CFG.sold = +j.sold || DEF.sold; CFG.vel = +j.vel || DEF.vel; } } catch (e) { /* bỏ qua */ }
+
+  /* ---------- Hàm thuần: số, ngày, link ---------- */
+  function parseNum(s) {
+    if (s == null) return null;
+    var t = String(s).trim().toLowerCase().replace(/\s/g, '').replace(/₫|đ|vnd|%/g, '');
+    if (!t) return null;
+    var mult = 1;
+    if (/(k|nghin|ngan)$/.test(t)) { mult = 1e3; t = t.replace(/(k|nghin|ngan)$/, ''); }
+    else if (/(tr|trieu|m)$/.test(t)) { mult = 1e6; t = t.replace(/(tr|trieu|m)$/, ''); }
+    if (/^\d{1,3}([.,]\d{3})+$/.test(t)) t = t.replace(/[.,]/g, '');
+    else t = t.replace(',', '.');
+    var n = parseFloat(t);
+    return isFinite(n) ? Math.round(n * mult * 100) / 100 : null;
+  }
+  function parseLink(raw) {
+    var s = String(raw || '').trim();
+    if (!s) return null;
+    var url;
+    try { url = new URL(/^https?:\/\//i.test(s) ? s : 'https://' + s); } catch (e) { return { error: 'Link chưa đúng dạng.' }; }
+    var host = url.hostname.toLowerCase();
+    if (/(^|\.)(shp\.ee|shope\.ee)$/.test(host) || host === 's.shopee.vn') return { short: true };
+    if (!/(^|\.)shopee\.[a-z.]+$/.test(host)) return { error: 'Đây không phải link Shopee.' };
+    var path = url.pathname;
+    try { path = decodeURIComponent(path); } catch (e) { /* giữ nguyên */ }
+    var m = path.match(/-i\.(\d+)\.(\d+)/);
+    if (m) {
+      var slug = path.slice(1, m.index).replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+      return { shopId: m[1], itemId: m[2], name: slug };
+    }
+    m = path.match(/\/(?:product|opaanlp)\/(\d+)\/(\d+)/);
+    if (m) return { shopId: m[1], itemId: m[2], name: '' };
+    return { error: 'Không thấy mã sản phẩm trong link này. Hãy mở trang sản phẩm rồi copy link trên thanh địa chỉ.' };
+  }
+  var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
+  function today() { var d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function dayNum(s) { var a = String(s).split('-').map(Number); return Date.UTC(a[0], a[1] - 1, a[2]) / 864e5; }
+  function shiftDay(s, n) { var t = new Date(dayNum(s) * 864e5 + n * 864e5); return t.getUTCFullYear() + '-' + pad2(t.getUTCMonth() + 1) + '-' + pad2(t.getUTCDate()); }
+  var fmtDay = function (s) { var a = String(s).split('-'); return a[2] + '/' + a[1]; };
+  var nf = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
+  var fmtInt = function (n) { return n == null ? '—' : nf.format(Math.round(n)); };
+  var fmtMoney = function (n) { return n == null ? '—' : nf.format(Math.round(n)) + ' đ'; };
+  var fmtDec = function (n) { return n == null ? '—' : (Math.round(n * 10) / 10).toString().replace('.', ','); };
+  function fmtCount(n) {
+    if (n == null) return '—';
+    if (n >= 10000) return (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace('.', ',') + 'k';
+    return nf.format(Math.round(n));
+  }
+
+  /* ---------- Quy tắc rủi ro theo tên ---------- */
+  var RULES = [
+    { lvl: 'err', re: /\b(sua cong thuc|binh sua|ti gia|ngam ti|bot an dam|do an dam|an dam kieu nhat|thuc pham bo sung cho (be|tre)|vitamin (cho )?(be|tre)|d3k2? cho (be|tre))\b/, t: 'Thuộc nhóm trẻ nhỏ bị cấm quảng bá (sữa công thức, đồ ăn dặm, ti giả, bình sữa, vitamin cho bé).' },
+    { lvl: 'warn', re: /\b(sua bot|sua cho (be|tre)|sua tang can|sua non)\b/, t: 'Có thể là sữa hoặc thực phẩm cho trẻ nhỏ. Kiểm tra trong app Shopee Affiliate xem có bị cấm không.' },
+    { lvl: 'warn', re: /\b(thuoc|vien uong|thuc pham chuc nang|tpcn|duong chat)\b/, t: 'Thuốc không kê đơn thuộc nhóm vật tư y tế bị cấm quảng bá. Thực phẩm chức năng dễ bị coi là cam kết công dụng y tế.' },
+    { lvl: 'warn', re: /\b(ruou|soju|sake|umeshu|vang do|vang trang|champagne|sampanh|whisky|whiskey|vodka|rum|gin|brandy|cognac)\b/, t: 'Đồ uống có cồn trên 15 độ bị cấm quảng bá.' }
+  ];
+  function rulesRisk(name) {
+    var t = norm(name), level = 'ok', reasons = [];
+    if (!t.trim()) return { level: level, reasons: reasons };
+    RULES.forEach(function (r) {
+      if (r.re.test(t)) { reasons.push({ t: r.t, src: 'rules', lvl: r.lvl }); if (r.lvl === 'err') level = 'err'; else if (level === 'ok') level = 'warn'; }
+    });
+    return { level: level, reasons: reasons };
+  }
+  var RANK = { ok: 0, warn: 1, err: 2 };
+  function mergeRisk(p) {
+    var r = rulesRisk(p.name), level = r.level, reasons = r.reasons.slice(), tips = [];
+    var c = p.claude;
+    if (c) {
+      if (RANK[c.level] > RANK[level]) level = c.level;
+      (c.reasons || []).forEach(function (t) { reasons.push({ t: t, src: 'claude', lvl: c.level }); });
+      tips = c.tips || [];
+    }
+    return { level: level, reasons: reasons, tips: tips };
+  }
+
+  /* ---------- Số đo và điểm ---------- */
+  function metrics(p) {
+    var sn = (p.snaps || []).slice().sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+    var lastOf = function (k) { for (var i = sn.length - 1; i >= 0; i--) if (sn[i][k] != null) return sn[i][k]; return null; };
+    var price = lastOf('price'), sold = lastOf('sold'), rating = lastOf('rating'), pct = p.commissionPct == null ? null : p.commissionPct;
+    var perSale = price != null && pct != null ? price * pct / 100 : null;
+    var ws = sn.filter(function (s) { return s.sold != null; }), vel = null;
+    if (ws.length >= 2) { var a = ws[0], b = ws[ws.length - 1], days = dayNum(b.d) - dayNum(a.d); if (days > 0) vel = Math.max(0, (b.sold - a.sold) / days); }
+    var wp = sn.filter(function (s) { return s.price != null; }), priceChange = null;
+    if (wp.length >= 2 && wp[0].price > 0) priceChange = (wp[wp.length - 1].price - wp[0].price) / wp[0].price * 100;
+    var parts = [];
+    if (perSale != null) parts.push({ label: 'Hoa hồng mỗi đơn', text: fmtMoney(perSale), c: clamp(perSale / CFG.perSale, 0, 1), w: 30 });
+    if (sold != null) parts.push({ label: 'Tổng đã bán', text: fmtCount(sold), c: clamp(Math.log10(sold + 1) / Math.log10(CFG.sold + 1), 0, 1), w: 20 });
+    if (vel != null) parts.push({ label: 'Đà bán mỗi ngày', text: fmtDec(vel) + ' đơn/ngày', c: clamp(vel / CFG.vel, 0, 1), w: 30 });
+    if (rating != null) parts.push({ label: 'Đánh giá', text: fmtDec(rating) + ' sao', c: clamp((rating - 4) / 0.9, 0, 1), w: 20 });
+    var score = null;
+    if (parts.length >= 2) { var tw = 0, sw = 0; parts.forEach(function (x) { tw += x.w; sw += x.c * x.w; }); score = Math.round(sw / tw * 100); }
+    return { sn: sn, price: price, sold: sold, rating: rating, pct: pct, perSale: perSale, vel: vel, priceChange: priceChange, parts: parts, score: score };
+  }
+  function verdict(m, risk) {
+    if (risk.level === 'err') return { k: 'bad', label: 'Không được quảng bá' };
+    if (m.score == null) return { k: 'mute', label: risk.level === 'warn' ? 'Cần xem lại' : 'Thiếu số liệu' };
+    var base = m.score >= 70 ? { k: 'good', label: 'Đáng làm' } : m.score >= 45 ? { k: 'warn', label: 'Cân nhắc' } : { k: 'mute', label: 'Chưa nên làm' };
+    if (risk.level === 'warn' && base.k === 'good') return { k: 'warn', label: 'Cần xem lại rủi ro' };
+    return base;
+  }
+
+  /* ---------- Lưu dữ liệu: db của trang, nếu không có thì trình duyệt ---------- */
+  var LSKEY = 'chon-hang-products';
+  var Store = {
+    mode: 'memory', col: null, local: {}, queue: {}, onChange: null,
+    init: function (onChange) {
+      var self = this; self.onChange = onChange;
+      var go = function (db) {
+        if (db) {
+          self.mode = 'db'; self.col = db.collection('products');
+          self.col.onSnapshot(function (snap) {
+            onChange(snap.docs.map(function (d) { var o = {}, v = d.data() || {}; for (var k in v) o[k] = v[k]; o.id = d.id; return o; }));
+          }, function () { self.fallback(); });
+        } else { self.fallback(); }
+      };
+      try {
+        if (window.claude && window.claude.use) window.claude.use('db').then(go, function () { go(null); });
+        else go(null);
+      } catch (e) { go(null); }
+    },
+    fallback: function () {
+      this.mode = 'local'; this.col = null;
+      try { var raw = localStorage.getItem(LSKEY); this.local = raw ? JSON.parse(raw) : {}; } catch (e) { this.local = {}; this.mode = 'memory'; }
+      this.emit();
+    },
+    persist: function () { try { localStorage.setItem(LSKEY, JSON.stringify(this.local)); } catch (e) { this.mode = 'memory'; } },
+    emit: function () { var self = this; this.onChange(Object.keys(this.local).map(function (k) { return self.local[k]; })); },
+    enqueue: function (id, fn) {
+      var prev = this.queue[id] || Promise.resolve();
+      var next = prev.catch(function () {}).then(fn);
+      this.queue[id] = next; return next;
+    },
+    save: function (p) {
+      var data = JSON.parse(JSON.stringify(p)), self = this;
+      if (this.mode === 'db') {
+        return this.enqueue(p.id, function () { return self.col.doc(p.id).set(data); }).catch(function (e) { toast(dbError(e), 'err'); });
+      }
+      this.local[p.id] = data; this.persist(); this.emit(); return Promise.resolve();
+    },
+    remove: function (id) {
+      var self = this;
+      if (this.mode === 'db') return this.enqueue(id, function () { return self.col.doc(id).delete(); }).catch(function (e) { toast(dbError(e), 'err'); });
+      delete this.local[id]; this.persist(); this.emit(); return Promise.resolve();
+    }
+  };
+  function dbError(e) {
+    var c = e && e.code;
+    if (c === 'quota_exceeded') return 'Đã đầy bộ nhớ lưu trang. Xóa bớt sản phẩm cũ rồi thử lại.';
+    if (c === 'invalid_argument') return 'Bạn chưa có quyền lưu dữ liệu trong trang này.';
+    return 'Chưa lưu được. Kiểm tra mạng rồi thử lại.';
+  }
+
+  /* ---------- Trạng thái ---------- */
+  var S = {
+    items: [], loaded: false, openId: null, editId: null, confirmDel: null,
+    sort: 'score', hideBan: false,
+    form: { thumb: null, blob: null, claude: null, autoName: '', parsed: null },
+    sample: null, imagesOk: false, downloads: null, busy: null
+  };
+  var toastTimer = null;
+  function toast(text, kind) {
+    var t = $('toast'); t.textContent = text; t.hidden = false;
+    t.style.background = kind === 'err' ? 'var(--bad)' : ''; t.style.color = kind === 'err' ? '#fff' : '';
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3800);
+  }
+  function note(id, text, kind) { var m = $(id); m.textContent = text || ''; m.dataset.k = kind || ''; }
+
+  /* ---------- Biểu đồ đường: một chuỗi, trục dọc không tiếp đất ---------- */
+  var CW = 320, CH = 132, PL = 46, PR = 12, PT = 12, PB = 24;
+  function chartSvg(points, kind) {
+    var fmt = kind === 'price' ? fmtInt : fmtCount;
+    var xs = points.map(function (p) { return dayNum(p.d); });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+    var vs = points.map(function (p) { return p.v; });
+    var vmin = Math.min.apply(null, vs), vmax = Math.max.apply(null, vs), lo = vmin, hi = vmax;
+    if (hi === lo) { var pd = Math.max(1, Math.abs(hi) * 0.05); lo -= pd; hi += pd; } else { var q = (hi - lo) * 0.1; lo -= q; hi += q; }
+    var X = function (d) { return PL + (x1 === x0 ? (CW - PL - PR) / 2 : (dayNum(d) - x0) / (x1 - x0) * (CW - PL - PR)); };
+    var Y = function (v) { return PT + (1 - (v - lo) / (hi - lo)) * (CH - PT - PB); };
+    var pts = points.map(function (p) { return { x: +X(p.d).toFixed(1), y: +Y(p.v).toFixed(1), d: p.d, v: p.v }; });
+    var path = 'M' + pts.map(function (p) { return p.x + ' ' + p.y; }).join('L');
+    var base = CH - PB, last = pts[pts.length - 1], first = pts[0];
+    var area = path + 'L' + last.x + ' ' + base + 'L' + first.x + ' ' + base + 'Z';
+    var grid = [PT, (PT + base) / 2, base].map(function (y) { return '<path class="grid" d="M' + PL + ' ' + y + 'H' + (CW - PR) + '"/>'; }).join('');
+    var yl = '<text x="' + (PL - 6) + '" y="' + (Y(vmax) + 4).toFixed(1) + '" text-anchor="end">' + esc(fmt(vmax)) + '</text>';
+    if (vmin !== vmax) yl += '<text x="' + (PL - 6) + '" y="' + (Y(vmin) + 4).toFixed(1) + '" text-anchor="end">' + esc(fmt(vmin)) + '</text>';
+    var xl = '<text x="' + PL + '" y="' + (CH - 6) + '" text-anchor="start">' + esc(fmtDay(points[0].d)) + '</text>';
+    if (points.length > 1) xl += '<text x="' + (CW - PR) + '" y="' + (CH - 6) + '" text-anchor="end">' + esc(fmtDay(points[points.length - 1].d)) + '</text>';
+    var data = esc(JSON.stringify(pts));
+    return '<svg class="chart" viewBox="0 0 ' + CW + ' ' + CH + '" role="img" aria-label="Biểu đồ ' + (kind === 'price' ? 'giá' : 'lượt bán') + ' theo ngày, xem bảng bên dưới" data-kind="' + kind + '" data-pts="' + data + '">' +
+      grid + '<path class="ar" d="' + area + '"/>' + '<path class="ln" d="' + path + '"/>' + yl + xl +
+      '<g class="hv"><path class="xh" d="M0 ' + PT + 'V' + base + '"/><circle class="dot" r="5" cx="0" cy="0"/></g>' +
+      '<circle class="dot" r="5" cx="' + last.x + '" cy="' + last.y + '"/>' +
+      '<rect class="hit" x="0" y="0" width="' + CW + '" height="' + CH + '"/></svg>';
+  }
+  function showTip(svg, e) {
+    var pts; try { pts = JSON.parse(svg.getAttribute('data-pts')); } catch (er) { return; }
+    var r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * CW, best = pts[0];
+    pts.forEach(function (p) { if (Math.abs(p.x - x) < Math.abs(best.x - x)) best = p; });
+    svg.classList.add('on');
+    var hv = svg.querySelector('.hv');
+    hv.querySelector('.xh').setAttribute('d', 'M' + best.x + ' ' + PT + 'V' + (CH - PB));
+    var c = hv.querySelector('.dot'); c.setAttribute('cx', best.x); c.setAttribute('cy', best.y);
+    var kind = svg.getAttribute('data-kind'), tip = $('tip');
+    tip.textContent = fmtDay(best.d) + ': ' + (kind === 'price' ? fmtMoney(best.v) : fmtInt(best.v) + ' đã bán');
+    tip.hidden = false;
+    var tw = tip.offsetWidth, left = clamp(r.left + best.x / CW * r.width - tw / 2, 8, window.innerWidth - tw - 8);
+    tip.style.left = left + 'px'; tip.style.top = Math.max(8, r.top + best.y / CH * r.height - 38) + 'px';
+  }
+  function hideTip() {
+    $('tip').hidden = true;
+    Array.prototype.forEach.call(document.querySelectorAll('.chart.on'), function (s) { s.classList.remove('on'); });
+  }
+  ['pointermove', 'pointerdown'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { var s = e.target && e.target.closest ? e.target.closest('.chart') : null; if (s) showTip(s, e); else hideTip(); });
+  });
+  document.addEventListener('pointerout', function (e) { var to = e.relatedTarget; if (!to || !to.closest || !to.closest('.chart')) hideTip(); });
+  window.addEventListener('scroll', hideTip, { passive: true });
+
+  /* ---------- Vẽ danh sách ---------- */
+  function sortedItems() {
+    var rows = S.items.map(function (p) { var risk = mergeRisk(p), m = metrics(p); return { p: p, risk: risk, m: m, v: verdict(m, risk) }; });
+    if (S.hideBan) rows = rows.filter(function (r) { return r.risk.level !== 'err'; });
+    var key = S.sort;
+    rows.sort(function (a, b) {
+      var ea = a.risk.level === 'err' ? 1 : 0, eb = b.risk.level === 'err' ? 1 : 0;
+      if (ea !== eb) return ea - eb;
+      if (key === 'new') return (b.p.createdAt || 0) - (a.p.createdAt || 0);
+      var f = key === 'comm' ? 'perSale' : key === 'vel' ? 'vel' : 'score';
+      var va = key === 'score' ? a.m.score : a.m[f], vb = key === 'score' ? b.m.score : b.m[f];
+      if (va == null && vb == null) return (b.p.createdAt || 0) - (a.p.createdAt || 0);
+      if (va == null) return 1; if (vb == null) return -1;
+      return vb - va;
+    });
+    return rows;
+  }
+  function subLine(m) {
+    var bits = [];
+    bits.push('Hoa hồng/đơn ' + (m.perSale != null ? fmtMoney(m.perSale) : '—'));
+    if (m.sold != null) bits.push('Đã bán ' + fmtCount(m.sold));
+    if (m.vel != null) bits.push(fmtDec(m.vel) + '/ngày');
+    if (m.rating != null) bits.push(fmtDec(m.rating) + ' sao');
+    return bits.join(' · ');
+  }
+  function claudeBoxHtml(c) {
+    if (!c) return '';
+    var lv = c.level === 'err' ? 'Claude thấy sản phẩm này không được quảng bá' : c.level === 'warn' ? 'Claude thấy cần xem lại' : 'Claude không thấy vấn đề rõ ràng';
+    var h = '<div class="claudebox"><b>' + esc(lv) + '</b>';
+    if (c.ten) h += '<span>Nhận ra là: ' + esc(c.ten) + '</span>';
+    if (c.reasons && c.reasons.length) h += '<ul class="tips">' + c.reasons.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+    if (c.tips && c.tips.length) h += '<span class="lab">Nên tránh nói trong video</span><ul class="tips">' + c.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+    return h + '</div>';
+  }
+  function detailHtml(r) {
+    var p = r.p, m = r.m, id = esc(p.id), h = '';
+    // rủi ro
+    h += '<div class="sec"><h3>Có được quảng bá không</h3>';
+    if (!r.risk.reasons.length) h += '<p class="note">Chưa thấy dấu hiệu bị cấm theo tên sản phẩm. ' + (p.claude || !S.sample ? '' : '') + 'Luôn đối chiếu danh sách cấm trong app Shopee Affiliate.</p>';
+    else h += '<ul class="risk">' + r.risk.reasons.map(function (x) { return '<li data-k="' + esc(x.lvl) + '"><span class="tag">' + (x.src === 'claude' ? 'Claude gợi ý' : 'Quy tắc') + '</span><span>' + esc(x.t) + '</span></li>'; }).join('') + '</ul>';
+    if (r.risk.tips.length) h += '<div><span class="lab">Nên tránh nói trong video</span><ul class="tips">' + r.risk.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>';
+    h += '</div>';
+    // điểm
+    h += '<div class="sec"><h3>Vì sao ra điểm này</h3>';
+    if (!m.parts.length) h += '<p class="note">Chưa có số liệu. Ghi giá, lượt bán và % hoa hồng để chấm điểm.</p>';
+    else {
+      h += '<div class="parts">' + m.parts.map(function (x) { return '<div class="part"><div class="part-top"><span>' + esc(x.label) + '</span><span>' + esc(x.text) + ' · ' + Math.round(x.c * 100) + '%</span></div><div class="meter"><i style="width:' + Math.round(x.c * 100) + '%"></i></div></div>'; }).join('') + '</div>';
+      if (m.score == null) h += '<p class="note">Cần ít nhất hai số liệu để ra điểm.</p>';
+      if (m.vel == null) h += '<p class="note">Ghi thêm số lượt bán vào một ngày khác để biết đà bán.</p>';
+    }
+    if (m.priceChange != null && Math.abs(m.priceChange) >= 0.5) h += '<p class="note">Giá đã ' + (m.priceChange < 0 ? 'giảm ' : 'tăng ') + fmtDec(Math.abs(m.priceChange)) + '% so với lần ghi đầu tiên.</p>';
+    h += '</div>';
+    // ghi số hôm nay
+    var dflt = { price: m.price, sold: m.sold, rating: m.rating };
+    h += '<div class="sec"><h3>Ghi số liệu</h3><div class="grid">' +
+      '<div class="field"><label for="sd-' + id + '">Ngày</label><input type="date" id="sd-' + id + '" data-f="date" value="' + today() + '"></div>' +
+      '<div class="field"><label for="sp-' + id + '">Giá (đ)</label><input type="text" id="sp-' + id + '" data-f="price" inputmode="decimal" autocomplete="off" value="' + (dflt.price != null ? esc(fmtInt(dflt.price)) : '') + '"></div>' +
+      '<div class="field"><label for="ss-' + id + '">Đã bán (tổng)</label><input type="text" id="ss-' + id + '" data-f="sold" inputmode="decimal" autocomplete="off" value="' + (dflt.sold != null ? esc(String(dflt.sold)) : '') + '"></div>' +
+      '<div class="field"><label for="sr-' + id + '">Đánh giá (sao)</label><input type="text" id="sr-' + id + '" data-f="rating" inputmode="decimal" autocomplete="off" value="' + (dflt.rating != null ? esc(String(dflt.rating).replace('.', ',')) : '') + '"></div></div>' +
+      '<div class="row"><button type="button" class="btn small primary" data-act="snap">Lưu số liệu ngày này</button></div>' +
+      '<p class="hint">Ghi cùng một ngày hai lần thì lần sau thay lần trước.</p></div>';
+    // biểu đồ
+    var sp = m.sn.filter(function (s) { return s.sold != null; }).map(function (s) { return { d: s.d, v: s.sold }; });
+    var pp = m.sn.filter(function (s) { return s.price != null; }).map(function (s) { return { d: s.d, v: s.price }; });
+    h += '<div class="sec"><h3>Theo dõi theo ngày</h3>';
+    if (sp.length < 2 && pp.length < 2) h += '<p class="note">Ghi số liệu ít nhất hai ngày khác nhau để thấy sản phẩm đang lên hay xuống.</p>';
+    else {
+      h += '<div class="charts">';
+      if (sp.length >= 2) h += '<div class="chartbox"><div class="ct"><span>Lượt bán</span><span>' + esc(fmtInt(sp[sp.length - 1].v)) + '</span></div>' + chartSvg(sp, 'sold') + '</div>';
+      if (pp.length >= 2) h += '<div class="chartbox"><div class="ct"><span>Giá</span><span>' + esc(fmtMoney(pp[pp.length - 1].v)) + '</span></div>' + chartSvg(pp, 'price') + '</div>';
+      h += '</div>';
+    }
+    if (m.sn.length) {
+      h += '<div class="tablewrap"><table><thead><tr><th>Ngày</th><th>Giá</th><th>Đã bán</th><th>Tăng</th><th>Sao</th><th><span class="sr">Xóa</span></th></tr></thead><tbody>';
+      var prevSold = null;
+      m.sn.forEach(function (s) {
+        var inc = s.sold != null && prevSold != null ? s.sold - prevSold : null; if (s.sold != null) prevSold = s.sold;
+        h += '<tr><td>' + esc(fmtDay(s.d)) + '</td><td>' + (s.price != null ? esc(fmtInt(s.price)) : '—') + '</td><td>' + (s.sold != null ? esc(fmtInt(s.sold)) : '—') + '</td><td>' + (inc != null ? (inc > 0 ? '+' : '') + esc(fmtInt(inc)) : '—') + '</td><td>' + (s.rating != null ? esc(fmtDec(s.rating)) : '—') + '</td>' +
+          '<td><button type="button" class="link danger" data-act="snapdel" data-date="' + esc(s.d) + '" aria-label="Xóa dòng ngày ' + esc(fmtDay(s.d)) + '">Xóa</button></td></tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    h += '</div>';
+    // hành động
+    var arm = S.confirmDel === p.id;
+    h += '<div class="actions">';
+    if (S.sample) h += '<button type="button" class="btn small" data-act="recheck"' + (S.busy ? ' disabled' : '') + '>' + (S.busy === p.id ? 'Claude đang xem…' : 'Nhờ Claude kiểm tra') + '</button>';
+    h += '<button type="button" class="btn small" data-act="edit">Sửa thông tin</button>';
+    if (p.link) h += '<a class="btn small" href="' + esc(p.link) + '" target="_blank" rel="noopener noreferrer">Mở trang Shopee</a>';
+    h += '<button type="button" class="link danger' + (arm ? ' arm' : '') + '" data-act="del">' + (arm ? 'Bấm lần nữa để xóa' : 'Xóa sản phẩm') + '</button></div>';
+    return h;
+  }
+  function itemHtml(r) {
+    var p = r.p, open = S.openId === p.id, v = r.v;
+    var thumb = p.thumb ? '<img src="' + esc(p.thumb) + '" alt="">' : esc((p.name || '?').trim().charAt(0).toUpperCase());
+    var h = '<article class="item' + (open ? ' open' : '') + '" data-id="' + esc(p.id) + '">' +
+      '<button type="button" class="item-head" data-act="toggle" aria-expanded="' + open + '">' +
+      '<span class="thumb">' + thumb + '</span>' +
+      '<span class="meta"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(subLine(r.m)) + '</span>' +
+      '<span class="pills"><span class="pill ' + v.k + '">' + esc(v.label) + '</span>' + (p.example ? '<span class="pill ex">Ví dụ</span>' : '') + '</span></span>' +
+      '<span class="score"><b>' + (r.m.score == null ? '—' : r.m.score) + '</b><i>điểm</i></span></button>';
+    if (open) h += '<div class="detail">' + detailHtml(r) + '</div>';
+    return h + '</article>';
+  }
+  function renderCounts(rows) {
+    var good = 0, bad = 0;
+    rows.forEach(function (r) { if (r.v.k === 'good') good++; if (r.risk.level === 'err') bad++; });
+    var c = [];
+    c.push('<span class="chip">' + S.items.length + ' sản phẩm</span>');
+    if (good) c.push('<span class="chip">' + good + ' đáng làm</span>');
+    if (bad) c.push('<span class="chip">' + bad + ' không được quảng bá</span>');
+    $('counts').innerHTML = c.join('');
+  }
+  function render() {
+    var rows = sortedItems(), box = $('list');
+    var hasEx = S.items.some(function (p) { return p.example; });
+    $('tools').hidden = !S.items.length;
+    $('exp').hidden = !S.downloads || !S.items.length;
+    $('delEx').hidden = !hasEx;
+    renderCounts(sortedItemsAll());
+    if (!S.loaded) { box.innerHTML = '<div class="card empty"><p class="note">Đang tải danh sách…</p></div>'; }
+    else if (!S.items.length) {
+      box.innerHTML = '<div class="card empty"><h2>Chưa có sản phẩm nào</h2><p class="note">Thêm sản phẩm ở trên. Mỗi sản phẩm cần tên (hoặc link có tên) và vài số liệu để chấm điểm.</p><button type="button" class="btn" data-act="examples">Xem thử với 2 sản phẩm ví dụ</button></div>';
+    } else if (!rows.length) {
+      box.innerHTML = '<div class="card empty"><p class="note">Mọi sản phẩm đang bị ẩn vì không được quảng bá. Bỏ tick "Ẩn sản phẩm không được quảng bá" để xem lại.</p></div>';
+    } else box.innerHTML = rows.map(itemHtml).join('');
+    var nt = $('storeNote');
+    nt.textContent = Store.mode === 'db' ? '' : Store.mode === 'local' ? 'Danh sách chỉ lưu trên trình duyệt này, không đồng bộ giữa điện thoại và máy tính.' : 'Chưa lưu được dữ liệu lâu dài. Đóng trang là mất danh sách.';
+  }
+  function sortedItemsAll() { return S.items.map(function (p) { var risk = mergeRisk(p), m = metrics(p); return { p: p, risk: risk, m: m, v: verdict(m, risk) }; }); }
+
+  /* ---------- Claude ---------- */
+  function buildPrompt(name, linkName, hasImg) {
+    return [
+      'Bạn hỗ trợ người làm tiếp thị liên kết trên Shopee Việt Nam kiểm tra nhanh một sản phẩm trước khi làm video.',
+      'Thông tin đã có:',
+      '- Tên người dùng nhập: ' + JSON.stringify(name || ''),
+      '- Tên lấy từ link: ' + JSON.stringify(linkName || ''),
+      hasImg ? '- Có kèm một hình sản phẩm.' : '- Không có hình.',
+      '',
+      'Việc cần làm:',
+      '1. Nhận ra sản phẩm là gì và đặt một tên gọi ngắn bằng tiếng Việt, tối đa 80 ký tự, vào "ten". Nếu thông tin không đủ để biết, để "ten" rỗng.',
+      '2. "nhom" là một trong: "me_be" (sữa công thức, thực phẩm hoặc vitamin hoặc thực phẩm bổ sung cho trẻ nhỏ, đồ ăn dặm, ti giả, bình sữa), "thuoc" (thuốc không kê đơn thuộc nhóm vật tư y tế), "ruou" (đồ uống có cồn trên 15 độ), "thuc_pham_chuc_nang", "khac".',
+      '3. "cam" là true chỉ khi nhóm là me_be, thuoc hoặc ruou, vì Shopee không cho quảng bá ba nhóm này trong tiếp thị liên kết. Nếu không chắc, để "cam" là false, "muc" là "warn" và nói rõ là không chắc.',
+      '4. "muc" là "ok", "warn" hoặc "err". Dùng "warn" cho sản phẩm dễ bị coi là cam kết y tế hoặc sức khỏe (thực phẩm chức năng, mỹ phẩm trị mụn, dụng cụ y tế) hoặc khi bạn không chắc.',
+      '5. "ly_do": tối đa 3 ý ngắn giải thích mức đánh giá. "goi_y_video": tối đa 3 điều nên tránh nói trong video cho sản phẩm này.',
+      'Không đoán giá, lượt bán hay hoa hồng. Chỉ trả về một đối tượng JSON dạng:',
+      '{"ten":"","nhom":"khac","cam":false,"muc":"ok","ly_do":[],"goi_y_video":[]}'
+    ].join('\n');
+  }
+  function normClaude(r) {
+    if (!r || typeof r !== 'object') return null;
+    var lv = ['ok', 'warn', 'err'].indexOf(r.muc) >= 0 ? r.muc : 'warn';
+    if (r.cam === true) lv = 'err';
+    var arr = function (a, n) { return (Array.isArray(a) ? a : []).filter(function (x) { return typeof x === 'string' && x.trim(); }).slice(0, n).map(function (x) { return x.trim().slice(0, 200); }); };
+    return { ten: typeof r.ten === 'string' ? r.ten.trim().slice(0, 100) : '', nhom: String(r.nhom || 'khac').slice(0, 30), level: lv, reasons: arr(r.ly_do, 3), tips: arr(r.goi_y_video, 3), at: Date.now() };
+  }
+  function sampleError(e) {
+    var c = e && e.code;
+    if (c === 'cancelled') return null;
+    if (c === 'not_granted' || c === 'sampling_disabled' || c === 'not_declared' || c === 'capability_disabled' || c === 'capability_removed') return 'Claude chưa được phép dùng trong trang này. Bạn có thể tiếp tục nhập tay.';
+    if (c === 'rate_limited') return 'Đang gọi Claude quá nhiều. Đợi một lúc rồi bấm lại.';
+    if (c === 'image_rejected') return 'Hình này không đọc được. Thử hình .jpg hoặc .png khác.';
+    if (c === 'invalid_json') return 'Claude trả lời không đúng khuôn. Bấm thử lại.';
+    if (c === 'session_expired') return 'Phiên đăng nhập đã hết. Hãy đăng nhập lại Claude.';
+    return 'Claude chưa trả lời được. Bấm thử lại sau.';
+  }
+  var ctl = null;
+  async function runClaude(name, linkName, blob) {
+    ctl = new AbortController();
+    var opts = { signal: ctl.signal, modelTier: 'default' };
+    if (blob && S.imagesOk) opts.images = blob;
+    var r = await S.sample.json(buildPrompt(name, linkName, !!(blob && S.imagesOk)), opts);
+    var c = normClaude(r);
+    if (!c) throw { code: 'invalid_json' };
+    return c;
+  }
+  function dataUrlToBlob(u) {
+    var m = /^data:([^;]+);base64,(.*)$/.exec(u || ''); if (!m) return null;
+    var bin = atob(m[2]), arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: m[1] });
+  }
+
+  /* ---------- Thẻ nhập ---------- */
+  function updateParse() {
+    var raw = $('fLink').value, r = parseLink(raw);
+    S.form.parsed = r;
+    if (!r) { note('fParse', ''); return; }
+    if (r.error) { note('fParse', r.error, 'err'); return; }
+    if (r.short) { note('fParse', 'Link rút gọn không đọc được mã sản phẩm. Mở link trong trình duyệt, copy link đầy đủ trên thanh địa chỉ, hoặc cứ nhập tên bên dưới.', 'warn'); return; }
+    note('fParse', 'Mã shop ' + r.shopId + ' · mã hàng ' + r.itemId + (r.name ? ' · đã lấy tên từ link' : ''), 'ok');
+    var nm = $('fName');
+    if (r.name && (!nm.value.trim() || nm.value === S.form.autoName)) { nm.value = r.name; S.form.autoName = r.name; }
+  }
+  $('fLink').addEventListener('input', updateParse);
+  $('fLink').addEventListener('paste', function () { setTimeout(updateParse, 0); });
+
+  function makeThumb(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var max = 320, s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+        var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(im.naturalWidth * s)); c.height = Math.max(1, Math.round(im.naturalHeight * s));
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL('image/jpeg', 0.7));
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); reject(new Error('img')); };
+      im.src = url;
+    });
+  }
+  $('fImg').addEventListener('change', async function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    try {
+      S.form.thumb = await makeThumb(f); S.form.blob = f;
+      $('fThumb').src = S.form.thumb; $('fThumb').hidden = false; $('fImgClear').hidden = false;
+    } catch (er) { note('fMsg', 'Không mở được hình này. Thử hình .jpg hoặc .png khác.', 'err'); }
+    e.target.value = '';
+  });
+  $('fImgClear').addEventListener('click', function () { S.form.thumb = null; S.form.blob = null; $('fThumb').hidden = true; $('fImgClear').hidden = true; });
+
+  function setBusy(id) {
+    S.busy = id;
+    $('fClaude').disabled = !!id; $('fStop').hidden = !id;
+    $('fClaude').textContent = id === 'form' ? 'Claude đang xem…' : 'Nhờ Claude xem tên và hình';
+    render();
+  }
+  $('fStop').addEventListener('click', function () { if (ctl) ctl.abort(); });
+  $('fClaude').addEventListener('click', async function () {
+    if (!S.sample || S.busy) return;
+    var name = $('fName').value.trim(), ln = S.form.parsed && S.form.parsed.name ? S.form.parsed.name : '';
+    if (!name && !ln && !S.form.blob) { note('fMsg', 'Nhập tên, dán link có tên hoặc chọn hình trước khi nhờ Claude.', 'warn'); return; }
+    note('fMsg', ''); setBusy('form');
+    try {
+      var c = await runClaude(name, ln, S.form.blob);
+      S.form.claude = c;
+      if (!name && c.ten) { $('fName').value = c.ten; S.form.autoName = c.ten; }
+      $('fClaudeOut').innerHTML = claudeBoxHtml(c);
+    } catch (e) { var m = sampleError(e); if (m) note('fMsg', m, 'err'); }
+    finally { setBusy(null); }
+  });
+
+  function resetForm() {
+    ['fLink', 'fName', 'fPct', 'fPrice', 'fSold', 'fRate'].forEach(function (id) { $(id).value = ''; });
+    S.form = { thumb: null, blob: null, claude: null, autoName: '', parsed: null };
+    S.editId = null;
+    $('fThumb').hidden = true; $('fImgClear').hidden = true; $('fClaudeOut').innerHTML = '';
+    note('fParse', ''); note('fMsg', '');
+    $('hAdd').textContent = 'Thêm sản phẩm'; $('fSave').textContent = 'Lưu sản phẩm'; $('fCancel').hidden = true;
+    $('fNumHint').textContent = 'Giá, lượt bán, sao lấy từ trang sản phẩm. % hoa hồng xem trong app Shopee Affiliate. Có thể để trống rồi ghi sau.';
+  }
+  $('fCancel').addEventListener('click', resetForm);
+
+  function readNums() {
+    var price = parseNum($('fPrice').value), sold = parseNum($('fSold').value), rating = parseNum($('fRate').value), pct = parseNum($('fPct').value);
+    if (price != null && price < 0) price = null;
+    if (sold != null && sold < 0) sold = null;
+    return { price: price, sold: sold, rating: rating, pct: pct };
+  }
+  function upsertSnap(p, snap) {
+    var sn = (p.snaps || []).filter(function (s) { return s.d !== snap.d; });
+    sn.push(snap); sn.sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+    p.snaps = sn.slice(-400);
+  }
+  function checkNums(n) {
+    if (n.rating != null && (n.rating < 0 || n.rating > 5)) return 'Số sao phải từ 0 đến 5.';
+    if (n.pct != null && (n.pct < 0 || n.pct > 100)) return '% hoa hồng phải từ 0 đến 100.';
+    return '';
+  }
+  $('fSave').addEventListener('click', function () {
+    var name = $('fName').value.trim();
+    if (!name) { note('fMsg', 'Nhập tên sản phẩm, hoặc dán link có tên trong đường dẫn.', 'err'); $('fName').focus(); return; }
+    var n = readNums(), bad = checkNums(n);
+    if (bad) { note('fMsg', bad, 'err'); return; }
+    var parsed = S.form.parsed && !S.form.parsed.error && !S.form.parsed.short ? S.form.parsed : null;
+    var existing = S.editId ? S.items.filter(function (i) { return i.id === S.editId; })[0] : null;
+    var id = existing ? existing.id : (parsed ? parsed.itemId : 'p' + Date.now().toString(36));
+    if (!existing && S.items.some(function (i) { return i.id === id; })) {
+      S.openId = id; render(); note('fMsg', 'Sản phẩm này đã có trong danh sách. Mình mở nó ra để bạn ghi số liệu mới.', 'warn'); return;
+    }
+    var p = existing ? JSON.parse(JSON.stringify(existing)) : { id: id, snaps: [], createdAt: Date.now() };
+    p.name = name.slice(0, 200);
+    p.link = $('fLink').value.trim().slice(0, 600);
+    if (parsed) { p.shopId = parsed.shopId; p.itemId = parsed.itemId; }
+    if (n.pct != null) p.commissionPct = n.pct; else if (p.commissionPct == null) p.commissionPct = null;
+    if (S.form.thumb) p.thumb = S.form.thumb; else if (p.thumb == null) p.thumb = null;
+    if (S.form.claude) p.claude = S.form.claude; else if (p.claude == null) p.claude = null;
+    delete p.example;
+    if (n.price != null || n.sold != null || n.rating != null) upsertSnap(p, { d: today(), price: n.price, sold: n.sold, rating: n.rating });
+    p.updatedAt = Date.now();
+    Store.save(p);
+    S.openId = p.id; resetForm();
+    toast('Đã lưu sản phẩm.');
+  });
+
+  /* ---------- Thao tác trong danh sách ---------- */
+  $('list').addEventListener('click', async function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var act = b.dataset.act, card = b.closest('.item'), id = card ? card.dataset.id : null;
+    var p = id ? S.items.filter(function (i) { return i.id === id; })[0] : null;
+    if (act === 'examples') { addExamples(); return; }
+    if (!p) return;
+    if (act === 'toggle') { S.openId = S.openId === id ? null : id; S.confirmDel = null; render(); return; }
+    if (act === 'snap') {
+      var f = function (k) { return card.querySelector('[data-f="' + k + '"]'); };
+      var d = f('date').value || today(), price = parseNum(f('price').value), sold = parseNum(f('sold').value), rating = parseNum(f('rating').value);
+      if (price == null && sold == null && rating == null) { toast('Nhập ít nhất một số liệu.', 'err'); return; }
+      if (rating != null && (rating < 0 || rating > 5)) { toast('Số sao phải từ 0 đến 5.', 'err'); return; }
+      var q = JSON.parse(JSON.stringify(p)); upsertSnap(q, { d: d, price: price, sold: sold, rating: rating }); q.updatedAt = Date.now();
+      Store.save(q); toast('Đã ghi số liệu ngày ' + fmtDay(d) + '.'); return;
+    }
+    if (act === 'snapdel') {
+      var q2 = JSON.parse(JSON.stringify(p)); q2.snaps = (q2.snaps || []).filter(function (s) { return s.d !== b.dataset.date; }); q2.updatedAt = Date.now();
+      Store.save(q2); return;
+    }
+    if (act === 'edit') {
+      S.editId = id; resetFormKeepEdit(p);
+      $('formCard').scrollIntoView({ block: 'start' }); return;
+    }
+    if (act === 'del') {
+      if (S.confirmDel === id) { S.confirmDel = null; if (S.openId === id) S.openId = null; Store.remove(id); toast('Đã xóa sản phẩm.'); }
+      else { S.confirmDel = id; render(); setTimeout(function () { if (S.confirmDel === id) { S.confirmDel = null; render(); } }, 4000); }
+      return;
+    }
+    if (act === 'recheck') {
+      if (!S.sample || S.busy) return;
+      S.busy = id; render();
+      try {
+        var blob = p.thumb ? dataUrlToBlob(p.thumb) : null;
+        var c = await runClaude(p.name, '', blob);
+        var q3 = JSON.parse(JSON.stringify(p)); q3.claude = c; q3.updatedAt = Date.now(); Store.save(q3);
+        toast('Claude đã kiểm tra xong.');
+      } catch (er) { var m = sampleError(er); if (m) toast(m, 'err'); }
+      finally { S.busy = null; render(); }
+    }
+  });
+  function resetFormKeepEdit(p) {
+    var keep = p.id; resetForm(); S.editId = keep;
+    $('fLink').value = p.link || ''; $('fName').value = p.name || ''; S.form.autoName = p.name || '';
+    $('fPct').value = p.commissionPct != null ? String(p.commissionPct).replace('.', ',') : '';
+    S.form.parsed = parseLink(p.link);
+    if (p.thumb) { $('fThumb').src = p.thumb; $('fThumb').hidden = false; }
+    if (p.claude) $('fClaudeOut').innerHTML = claudeBoxHtml(p.claude);
+    $('hAdd').textContent = 'Sửa sản phẩm'; $('fSave').textContent = 'Lưu thay đổi'; $('fCancel').hidden = false;
+    $('fNumHint').textContent = 'Để trống giá, lượt bán, sao nếu không có số mới. Muốn ghi số liệu thì dùng mục "Ghi số liệu" trong thẻ sản phẩm.';
+    ['fPrice', 'fSold', 'fRate'].forEach(function (id) { $(id).value = ''; });
+  }
+
+  /* ---------- Ví dụ, sắp xếp, xuất file ---------- */
+  function addExamples() {
+    var t = today(), mk = function (o) { o.createdAt = Date.now(); o.updatedAt = Date.now(); o.example = true; o.thumb = null; o.claude = null; return o; };
+    Store.save(mk({
+      id: 'vidu1', name: 'Ví dụ: Giá đỡ điện thoại để bàn gấp gọn', link: '', commissionPct: 8,
+      snaps: [
+        { d: shiftDay(t, -4), price: 59000, sold: 1180, rating: 4.8 }, { d: shiftDay(t, -3), price: 59000, sold: 1215, rating: 4.8 },
+        { d: shiftDay(t, -2), price: 55000, sold: 1290, rating: 4.8 }, { d: shiftDay(t, -1), price: 55000, sold: 1380, rating: 4.8 },
+        { d: t, price: 55000, sold: 1490, rating: 4.8 }
+      ]
+    }));
+    Store.save(mk({
+      id: 'vidu2', name: 'Ví dụ: Sữa công thức cho bé 800g', link: '', commissionPct: 5,
+      snaps: [{ d: t, price: 450000, sold: 5200, rating: 4.9 }]
+    }));
+    S.openId = 'vidu1'; render();
+    toast('Đã thêm 2 sản phẩm ví dụ. Số liệu trong ví dụ là bịa để minh họa.');
+  }
+  $('delEx').addEventListener('click', function () {
+    S.items.filter(function (p) { return p.example; }).forEach(function (p) { Store.remove(p.id); });
+    toast('Đã xóa các ví dụ.');
+  });
+  $('sort').addEventListener('change', function (e) { S.sort = e.target.value; render(); });
+  $('hideBan').addEventListener('change', function (e) { S.hideBan = e.target.checked; render(); });
+
+  function csvCell(v) { var s = v == null ? '' : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  $('exp').addEventListener('click', async function () {
+    if (!S.downloads) return;
+    var rows = [['Tên', 'Link', 'Mã shop', 'Mã hàng', '% hoa hồng', 'Ngày', 'Giá', 'Đã bán', 'Sao', 'Điểm', 'Kết luận']];
+    sortedItemsAll().forEach(function (r) {
+      var p = r.p, base = [p.name, p.link || '', p.shopId || '', p.itemId || '', p.commissionPct == null ? '' : p.commissionPct];
+      var tail = [r.m.score == null ? '' : r.m.score, r.v.label];
+      if (!r.m.sn.length) rows.push(base.concat(['', '', '', ''], tail));
+      r.m.sn.forEach(function (s) { rows.push(base.concat([s.d, s.price == null ? '' : s.price, s.sold == null ? '' : s.sold, s.rating == null ? '' : s.rating], tail)); });
+    });
+    var csv = '﻿' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+    try { await S.downloads.save({ filename: 'san-pham-shopee.csv', data: csv }); toast('Đã xuất file san-pham-shopee.csv.'); }
+    catch (er) { if (!er || er.code !== 'declined') toast('Chưa xuất được file. Thử lại sau.', 'err'); }
+  });
+
+  /* ---------- Mốc chấm điểm ---------- */
+  function fillCfg() { $('cPer').value = String(CFG.perSale); $('cSold').value = String(CFG.sold); $('cVel').value = String(CFG.vel); }
+  $('cSave').addEventListener('click', function () {
+    var a = parseNum($('cPer').value), b = parseNum($('cSold').value), c = parseNum($('cVel').value);
+    if (!(a > 0) || !(b > 0) || !(c > 0)) { note('cMsg', 'Cả ba mốc phải là số lớn hơn 0.', 'err'); return; }
+    CFG.perSale = a; CFG.sold = b; CFG.vel = c;
+    try { localStorage.setItem(SKEY, JSON.stringify(CFG)); } catch (e) { /* bỏ qua */ }
+    note('cMsg', 'Đã lưu mốc mới.', 'ok'); render();
+  });
+  $('cReset').addEventListener('click', function () {
+    CFG.perSale = DEF.perSale; CFG.sold = DEF.sold; CFG.vel = DEF.vel;
+    try { localStorage.removeItem(SKEY); } catch (e) { /* bỏ qua */ }
+    fillCfg(); note('cMsg', 'Đã về mốc mặc định.', 'ok'); render();
+  });
+
+  /* ---------- Khởi động ---------- */
+  fillCfg(); render();
+  Store.init(function (items) { S.items = items; S.loaded = true; if (S.openId && !items.some(function (i) { return i.id === S.openId; })) S.openId = null; render(); });
+  (async function () {
+    try {
+      if (window.claude && window.claude.use) {
+        S.sample = await window.claude.use('sample');
+        if (S.sample) { var lim = await S.sample.limits().catch(function () { return null; }); S.imagesOk = !!(lim && lim.images); }
+        var dl = await window.claude.use('downloads'); if (dl) S.downloads = dl;
+      }
+    } catch (e) { /* bỏ qua */ }
+    $('claudeRow').hidden = !S.sample;
+    if (S.sample && !S.imagesOk) $('claudeHint').textContent = 'Claude đọc tên sản phẩm và báo có thuộc nhóm bị cấm quảng bá không. Phiên bản này chưa gửi được hình cho Claude. Đây chỉ là gợi ý, danh sách cấm chính thức nằm trong app Shopee Affiliate.';
+    render();
+  })();
+
+  /* ---------- Bản độc lập: lưu file, sao lưu, cài app ---------- */
+  S.downloads = {
+    save: async function (req) {
+      var blob = req.data instanceof Blob ? req.data : new Blob([req.data], { type: 'text/plain' });
+      var file = null;
+      try { file = new File([blob], req.filename, { type: blob.type }); } catch (e) { file = null; }
+      var touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+      if (touch && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); return { status: 'saved' }; }
+        catch (e) { if (e && e.name === 'AbortError') throw { code: 'declined' }; }
+      }
+      var url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = req.filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+      return { status: 'saved' };
+    }
+  };
+  render();
+  $('bkSave').addEventListener('click', async function () {
+    if (!S.items.length) { note('bkMsg', 'Chưa có sản phẩm để sao lưu.', 'warn'); return; }
+    try { await S.downloads.save({ filename: 'chon-hang-sao-luu-' + today() + '.json', data: new Blob([JSON.stringify({ app: 'chon-hang', v: 1, items: S.items })], { type: 'application/json' }) }); note('bkMsg', 'Đã sao lưu ' + S.items.length + ' sản phẩm.', 'ok'); }
+    catch (e) { note('bkMsg', e && e.code === 'declined' ? 'Bạn đã hủy.' : 'Không sao lưu được.', e && e.code === 'declined' ? 'warn' : 'err'); }
+  });
+  $('bkLoad').addEventListener('change', async function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    try {
+      var j = JSON.parse(await f.text());
+      if (!j || j.app !== 'chon-hang' || !Array.isArray(j.items)) throw new Error('x');
+      var have = {}; S.items.forEach(function (p) { have[p.id] = p; });
+      var n = 0;
+      j.items.forEach(function (p) {
+        if (!p || typeof p.id !== 'string' || typeof p.name !== 'string') return;
+        var cur = have[p.id];
+        if (cur) { var m = {}; (cur.snaps || []).concat(p.snaps || []).forEach(function (s) { if (s && s.d) m[s.d] = s; }); p.snaps = Object.keys(m).sort().map(function (k) { return m[k]; }).slice(-400); }
+        Store.save(p); n++;
+      });
+      note('bkMsg', 'Đã nạp ' + n + ' sản phẩm. Số liệu cùng ngày được gộp.', 'ok');
+    } catch (er) { note('bkMsg', 'File này không phải file sao lưu của công cụ.', 'err'); }
+    e.target.value = '';
+  });
+  var deferredInstall = null;
+  var isStandalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferredInstall = e; if (!isStandalone) $('installBtn').hidden = false; });
+  $('installBtn').addEventListener('click', async function () {
+    if (!deferredInstall) return;
+    deferredInstall.prompt();
+    try { await deferredInstall.userChoice; } catch (e) { /* bỏ qua */ }
+    deferredInstall = null; $('installBtn').hidden = true;
+  });
+  window.addEventListener('appinstalled', function () { $('installBtn').hidden = true; $('iosHint').hidden = true; });
+  var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIos && !isStandalone) $('iosHint').hidden = false;
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () { /* bỏ qua */ }); });
+  }
+
+  /* ---------- Nhập số liệu từ nút trên trang Shopee ---------- */
+  var BM_SRC = "(function(){ try{ var L=location.href, m=L.match(/-i\\.(\\d+)\\.(\\d+)/)||L.match(/\\/product\\/(\\d+)\\/(\\d+)/); if(!/(^|\\.)shopee\\.vn$/.test(location.hostname)||!m){alert('H\u00e3y m\u1edf trang m\u1ed9t s\u1ea3n ph\u1ea9m tr\u00ean shopee.vn r\u1ed3i b\u1ea5m n\u00fat.');return;} var T=document.body.innerText, num=function(s){ if(s==null)return null; s=String(s).toLowerCase().replace(/\\s|\\+/g,''); var k=1; if(/tr$/.test(s)){k=1e6;s=s.slice(0,-2);} else if(/k$/.test(s)){k=1e3;s=s.slice(0,-1);} if(/^\\d{1,3}([.,]\\d{3})+$/.test(s))s=s.replace(/[.,]/g,''); else s=s.replace(',','.'); var n=parseFloat(s); return isFinite(n)?Math.round(n*k):null;}; var r=null,sold=null,price=null,pmax=null,mm; mm=T.match(/(?:^|\\n)\\s*([0-5](?:[.,]\\d)?)\\s*\\n\\s*[\\d.,]+k?\\s*\\n\\s*\u0110\u00e1nh Gi\u00e1/i); if(mm)r=parseFloat(mm[1].replace(',','.')); mm=T.match(/\u0110\u00e3 B\u00e1n\\s*([\\d.,]+\\s*(?:k|tr)?\\+?)/i); if(mm)sold=num(mm[1]); var i=T.search(/\u0110\u00e3 B\u00e1n/i), seg=i>=0?T.slice(i,i+400):T; mm=seg.match(/([\\d.]{3,})\\s*\u20ab(?:\\s*-\\s*([\\d.]{3,})\\s*\u20ab)?/); if(!mm)mm=T.match(/([\\d.]{3,})\\s*\u20ab(?:\\s*-\\s*([\\d.]{3,})\\s*\u20ab)?/); if(mm){price=num(mm[1]); if(mm[2])pmax=num(mm[2]);} var h=document.querySelector('h1'), name=(h&&h.innerText.trim())||document.title.replace(/\\s*\\|\\s*Shopee.*$/,'').trim(); var d=new Date(), p2=function(n){return (n<10?'0':'')+n;}; var out={a:'chon-hang',v:1,i:m[2],s:m[1],n:name.slice(0,200),p:price,pm:pmax,sd:sold,r:r,u:'https://shopee.vn/product/'+m[1]+'/'+m[2],d:d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())}; var txt='CHONHANG1 '+JSON.stringify(out); var msg=(sold==null&&price==null&&r==null)?'Kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c s\u1ed1 li\u1ec7u. Shopee c\u00f3 th\u1ec3 \u0111\u00e3 \u0111\u1ed5i giao di\u1ec7n.':'\u0110\u00e3 l\u1ea5y: '+(price!=null?price.toLocaleString('vi-VN')+'\u0111':'ch\u01b0a c\u00f3 gi\u00e1')+' \u00b7 b\u00e1n '+(sold!=null?sold.toLocaleString('vi-VN'):'?')+' \u00b7 '+(r!=null?r+' sao':'ch\u01b0a c\u00f3 sao')+(pmax?' (gi\u00e1 th\u1ea5p nh\u1ea5t trong nhi\u1ec1u ph\u00e2n lo\u1ea1i)':'')+'. Quay l\u1ea1i app Ch\u1ecdn H\u00e0ng v\u00e0 b\u1ea5m D\u00e1n s\u1ed1 li\u1ec7u.'; var done=function(ok){ var b=document.createElement('div'); b.style.cssText='position:fixed;z-index:2147483647;left:50%;top:16px;transform:translateX(-50%);max-width:min(520px,92vw);background:#141B26;color:#fff;font:14px/1.45 system-ui,sans-serif;padding:12px 16px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.3)'; b.textContent=msg+(ok?'':' Ch\u01b0a t\u1ef1 sao ch\u00e9p \u0111\u01b0\u1ee3c, h\u00e3y copy \u0111o\u1ea1n b\u00ean d\u01b0\u1edbi.'); if(!ok){var t=document.createElement('textarea'); t.value=txt; t.style.cssText='display:block;width:100%;margin-top:8px;height:70px;font:12px monospace'; b.appendChild(t); t.focus(); t.select();} document.body.appendChild(b); setTimeout(function(){b.remove();},ok?7000:60000); }; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){done(true);},function(){done(false);});}else done(false); }catch(e){alert('L\u1ed7i: '+e.message);} })();";
+  var BM_HREF = 'javascript:' + encodeURIComponent(BM_SRC);
+  $('bmLink').setAttribute('href', BM_HREF);
+  $('bmCopy').addEventListener('click', async function () {
+    try { await navigator.clipboard.writeText('javascript:' + BM_SRC); note('impMsg', 'Đã sao chép mã nút.', 'ok'); }
+    catch (e) { note('impMsg', 'Không sao chép được. Hãy kéo nút xanh lên thanh dấu trang.', 'err'); }
+  });
+  function importText(raw) {
+    var i = String(raw || '').indexOf('CHONHANG1');
+    if (i < 0) { note('impMsg', 'Không thấy số liệu. Hãy bấm nút trên trang sản phẩm Shopee trước.', 'err'); return; }
+    var o; try { o = JSON.parse(String(raw).slice(i + 9).trim()); } catch (e) { note('impMsg', 'Đoạn mã bị cắt hoặc sai. Thử lấy lại.', 'err'); return; }
+    if (!o || o.a !== 'chon-hang' || !/^\d+$/.test(String(o.i)) || !/^\d{4}-\d{2}-\d{2}$/.test(String(o.d))) { note('impMsg', 'Đoạn mã không đúng dạng.', 'err'); return; }
+    var nn = function (v) { return typeof v === 'number' && isFinite(v) && v >= 0 ? v : null; };
+    var price = nn(o.p), sold = nn(o.sd), rating = nn(o.r);
+    if (rating != null && rating > 5) rating = null;
+    if (price == null && sold == null && rating == null) { note('impMsg', 'Trang không có số liệu đọc được.', 'err'); return; }
+    var id = String(o.i), cur = S.items.filter(function (p) { return p.id === id; })[0];
+    var p = cur ? JSON.parse(JSON.stringify(cur)) : { id: id, name: String(o.n || 'Sản phẩm ' + id).slice(0, 200), link: String(o.u || '').slice(0, 600), shopId: String(o.s || ''), itemId: id, commissionPct: null, thumb: null, claude: null, snaps: [], createdAt: Date.now() };
+    upsertSnap(p, { d: o.d, price: price, sold: sold, rating: rating }); p.updatedAt = Date.now();
+    Store.save(p); S.openId = id; render();
+    var extra = sold != null && sold >= 10000 && sold % 1000 === 0 ? ' Lượt bán là số làm tròn của Shopee.' : '';
+    note('impMsg', (cur ? 'Đã cập nhật ' : 'Đã thêm ') + '"' + p.name.slice(0, 50) + '" ngày ' + fmtDay(o.d) + '.' + extra + (cur ? '' : ' Nhớ nhập % hoa hồng.'), 'ok');
+    $('impText').value = '';
+  }
+  $('impPaste').addEventListener('click', async function () {
+    try { importText(await navigator.clipboard.readText()); }
+    catch (e) { note('impMsg', 'Trình duyệt không cho đọc bộ nhớ tạm. Hãy dán vào ô bên dưới rồi bấm Nhập.', 'warn'); $('impText').focus(); }
+  });
+  $('impGo').addEventListener('click', function () { importText($('impText').value); });
+  window.__chonHang = { parseNum: parseNum, parseLink: parseLink, metrics: metrics, rulesRisk: rulesRisk, verdict: verdict, parseDay: dayNum };
+})();
+</script>
