@@ -1,5 +1,5 @@
 /* Chọn Hàng Shopee: lưu sẵn giao diện để mở được khi mất mạng. Video không bao giờ được gửi đi đâu. */
-const VER = 'chh-v2';
+const VER = 'chh-v3';
 const FONTS = 'chh-fonts-v1';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 

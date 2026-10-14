@@ -169,6 +169,33 @@ details.card[open] > summary::after { content: "\2212"; }
     <p class="lead">Dán link, nhập tên hoặc thêm hình sản phẩm. Ghi giá và lượt bán mỗi ngày để biết sản phẩm nào đáng làm video và có được quảng bá hay không.</p>
   </header>
 
+  <details class="card" id="guide" open>
+    <summary>Hướng dẫn sử dụng</summary>
+    <div style="display:grid;gap:14px;margin-top:14px">
+      <div class="sec"><h3>1. Thêm sản phẩm</h3>
+        <ul class="tips">
+          <li><b>Nhanh nhất (máy tính):</b> dùng nút "Lấy số liệu Shopee" ở mục phía dưới. Mở trang sản phẩm trên shopee.vn, bấm dấu trang, quay lại app bấm "Dán số liệu từ Shopee".</li>
+          <li><b>Nhập tay:</b> dán link sản phẩm vào ô đầu tiên, app tự tách tên. Điền giá, lượt bán, số sao nhìn thấy trên trang, và % hoa hồng xem trong app Shopee Affiliate. Bấm "Lưu sản phẩm".</li>
+        </ul></div>
+      <div class="sec"><h3>2. Ghi số liệu mỗi ngày</h3>
+        <p class="note">Bấm vào sản phẩm trong danh sách, ở mục "Ghi số liệu" nhập giá và lượt bán hôm nay. Sau hai ngày khác nhau trở lên app mới biết sản phẩm bán nhanh hay chậm và vẽ biểu đồ. Ghi cùng một ngày hai lần thì lần sau thay lần trước.</p></div>
+      <div class="sec"><h3>3. Đọc điểm và kết luận</h3>
+        <ul class="tips">
+          <li>Điểm 0 đến 100 dùng để so sánh các sản phẩm với nhau, không dự đoán doanh thu. Bấm vào sản phẩm để xem điểm đến từ đâu.</li>
+          <li><b>Đáng làm</b> từ 70 điểm, <b>Cân nhắc</b> từ 45, dưới đó là <b>Chưa nên làm</b>. Thiếu số liệu thì app ghi "Thiếu số liệu".</li>
+          <li>Hoa hồng mỗi đơn bằng giá nhân % hoa hồng. Đà bán là số đơn tăng mỗi ngày giữa các lần ghi.</li>
+          <li>Mốc chấm điểm đổi được ở mục "Mốc chấm điểm và nguồn quy định" cuối trang.</li>
+        </ul></div>
+      <div class="sec"><h3>4. Có được quảng bá không</h3>
+        <p class="note">App cảnh báo theo từ khóa trong tên sản phẩm (sữa công thức, đồ ăn dặm, thuốc, rượu...). Đây chỉ là gợi ý, thiếu hoặc nhầm đều có thể xảy ra. Luôn đối chiếu danh sách cấm trong app Shopee Affiliate trước khi làm video.</p></div>
+      <div class="sec"><h3>5. Lưu và chuyển dữ liệu</h3>
+        <ul class="tips">
+          <li>Danh sách lưu trên thiết bị đang dùng. Xóa dữ liệu trình duyệt là mất.</li>
+          <li>Bấm "Xuất CSV cho Excel" để mở bằng Excel. Bấm "Sao lưu ra file" để chuyển sang máy khác, rồi "Nạp từ file sao lưu" ở máy kia.</li>
+        </ul></div>
+      <p class="hint">Giá, lượt bán lấy từ trang Shopee nên có thể lệch vài phút so với thực tế. Điểm chỉ là gợi ý để chọn, bạn là người quyết định.</p>
+    </div>
+  </details>
   <section class="card" id="formCard" aria-labelledby="hAdd">
     <h2 id="hAdd">Thêm sản phẩm</h2>
     <div class="field">
@@ -1023,6 +1050,8 @@ details.card[open] > summary::after { content: "\2212"; }
     catch (e) { note('impMsg', 'Trình duyệt không cho đọc bộ nhớ tạm. Hãy dán vào ô bên dưới rồi bấm Nhập.', 'warn'); $('impText').focus(); }
   });
   $('impGo').addEventListener('click', function () { importText($('impText').value); });
+  try { if (localStorage.getItem('chon-hang-guide') === 'closed') $('guide').open = false; } catch (e) { /* bỏ qua */ }
+  $('guide').addEventListener('toggle', function () { try { localStorage.setItem('chon-hang-guide', $('guide').open ? 'open' : 'closed'); } catch (e) { /* bỏ qua */ } });
   window.__chonHang = { parseNum: parseNum, parseLink: parseLink, metrics: metrics, rulesRisk: rulesRisk, verdict: verdict, parseDay: dayNum };
 })();
 </script>
