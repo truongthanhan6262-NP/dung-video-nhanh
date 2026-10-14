@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Dựng Video Nhanh",
+  "short_name": "Dựng Video",
+  "description": "Cắt đầu cuối, chèn chữ, phụ đề, che mặt, ảnh bìa và xuất video dọc 9:16 ngay trên máy.",
+  "lang": "vi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF0F4",
+  "theme_color": "#EDF0F4",
+  "categories": ["productivity", "multimedia"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
